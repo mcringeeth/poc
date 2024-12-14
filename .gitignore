@@ -7,3 +7,4 @@ demo/*
 !demo/input/
 
 .idea/
+enclave-key.pem
