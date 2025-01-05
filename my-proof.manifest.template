@@ -7,6 +7,9 @@ sgx.max_threads = 4
 # Whitelist ENV variables that get passed to the enclave
 # Using { passthrough = true } allows values to be passed in from the Satya node's /RunProof endpoint
 loader.env.TELEGRAM_INIT_DATA = { passthrough = true }
+loader.env.TELEGRAM_BOT_ACCESS_KEY = { passthrough = true }
+loader.env.FILEBASE_ACCESS_KEY_ID = { passthrough = true }
+loader.env.FILEBASE_SECRET_ACCESS_KEY = { passthrough = true }
 
 loader.entrypoint = { path = "/my_proof/__main__.py" }
 
