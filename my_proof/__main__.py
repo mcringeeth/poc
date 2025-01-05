@@ -19,7 +19,10 @@ def load_config() -> Dict[str, Any]:
         'dlp_id': 8,  # Set your own DLP ID here
         'use_sealing': os.path.isdir(SEALED_DIR),
         'input_dir': INPUT_DIR,
-        'user_email': os.environ.get('USER_EMAIL', None),
+        'telegram_bot_access_key': os.environ.get('TELEGRAM_BOT_ACCESS_KEY', None),
+        'tg_init_data': os.environ.get('TELEGRAM_INIT_DATA', None).strip('"\'') if os.environ.get('TELEGRAM_INIT_DATA') else None,
+        'filebase_access_key_id': os.environ.get('FILEBASE_ACCESS_KEY_ID', None),
+        'filebase_secret_access_key': os.environ.get('FILEBASE_SECRET_ACCESS_KEY', None),
     }
     logging.info(f"Using config: {json.dumps(config, indent=2)}")
     return config
@@ -39,7 +42,7 @@ def run() -> None:
 
     output_path = os.path.join(OUTPUT_DIR, "results.json")
     with open(output_path, 'w') as f:
-        json.dump(proof_response.dict(), f, indent=2)
+        json.dump(proof_response.model_dump(), f, indent=2)
     logging.info(f"Proof generation complete: {proof_response}")
 
 

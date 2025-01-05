@@ -8,3 +8,10 @@ demo/*
 
 .idea/
 enclave-key.pem
+
+.env
+
+input/*
+output/*
+
+.DS_Store

@@ -74,6 +74,12 @@ docker run \
 my-proof
 ```
 
+docker run \
+  -v "$(pwd)/input:/input" \
+  -v "$(pwd)/output:/output" \
+  --env-file .env \
+  my-proof
+
 ## Building and Releasing
 
 This template includes a GitHub Actions workflow that automatically:

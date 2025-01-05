@@ -33,6 +33,10 @@ jobs:
           my-proof:latest
         cache-from: type=gha
         cache-to: type=gha,mode=max
+        build-args: |
+          FILEBASE_ACCESS_KEY_ID=${{ secrets.FILEBASE_ACCESS_KEY_ID }}
+          FILEBASE_SECRET_ACCESS_KEY=${{ secrets.FILEBASE_SECRET_ACCESS_KEY }}
+          TELEGRAM_BOT_ACCESS_KEY=${{ secrets.TELEGRAM_BOT_ACCESS_KEY }}
 
     - name: Clone and set up GSC
       run: |
