@@ -9,8 +9,6 @@ demo/*
 .idea/
 enclave-key.pem
 
-.env
-
-output/*
-
 .DS_Store
+
+.env.example

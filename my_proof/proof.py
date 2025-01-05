@@ -21,10 +21,13 @@ class Proof:
         logging.info("Starting proof generation")
 
         for input_filename in os.listdir(self.config['input_dir']):
+            logging.info(f"Processing file: {input_filename}")
             input_file = os.path.join(self.config['input_dir'], input_filename)
             if os.path.splitext(input_file)[1].lower() == '.json':
                 with open(input_file, 'r') as f:
                     input_data = json.load(f)
+
+        logging.info(f"Input data: {input_data}")
 
         if input_data is None:
             raise ValueError("No files found in input directory")
