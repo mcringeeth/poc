@@ -22,32 +22,23 @@ class Proof:
         logging.info("Starting proof generation")
         input_data = None
 
-        # First, extract all zip files
+        # Process all files as potential JSON files
         for input_filename in os.listdir(self.config['input_dir']):
-            logging.info(f"Processing zip file: {input_filename}")
+            logging.info(f"Processing file: {input_filename}")
             input_file = os.path.join(self.config['input_dir'], input_filename)
-            if input_file.endswith('.zip'):
-                logging.info(f"Extracting zip file: {input_filename}")
-                try:
-                    with zipfile.ZipFile(input_file, 'r') as zip_ref:
-                        zip_ref.extractall(self.config['input_dir'])
-                    os.remove(input_file)
-                except Exception as e:
-                    logging.error(f"Error extracting zip file {input_filename}: {str(e)}")
-                    raise
-
-        # Then process any JSON files (including those that were in zips)
-        for input_filename in os.listdir(self.config['input_dir']):
-            logging.info(f"Processing json file: {input_filename}")
-            input_file = os.path.join(self.config['input_dir'], input_filename)
-            if os.path.splitext(input_file)[1].lower() == '.json':
+            try:
                 with open(input_file, 'r') as f:
                     input_data = json.load(f)
-
-        logging.info(f"Input data: {input_data}")
+                    break  # Stop after first successful JSON parse
+            except json.JSONDecodeError:
+                logging.warning(f"File {input_filename} is not a valid JSON file, skipping")
+                continue
+            except Exception as e:
+                logging.error(f"Error reading file {input_filename}: {str(e)}")
+                raise
 
         if input_data is None:
-            raise ValueError("No files found in input directory")
+            raise ValueError("No valid JSON files found in input directory")
 
         self.proof_response.uniqueness = self.calc_uniqueness(input_data)
         self.proof_response.ownership = self.calc_ownership(input_data)
