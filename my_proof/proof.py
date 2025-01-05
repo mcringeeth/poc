@@ -7,6 +7,7 @@ import hmac
 from urllib.parse import parse_qsl
 from datetime import datetime
 from my_proof.filebase_service import FilebaseService
+import zipfile
 
 from my_proof.models.proof_response import ProofResponse
 
@@ -19,9 +20,25 @@ class Proof:
     def generate(self) -> ProofResponse:
         """Generate proofs for all input files."""
         logging.info("Starting proof generation")
+        input_data = None
 
+        # First, extract all zip files
         for input_filename in os.listdir(self.config['input_dir']):
-            logging.info(f"Processing file: {input_filename}")
+            logging.info(f"Processing zip file: {input_filename}")
+            input_file = os.path.join(self.config['input_dir'], input_filename)
+            if input_file.endswith('.zip'):
+                logging.info(f"Extracting zip file: {input_filename}")
+                try:
+                    with zipfile.ZipFile(input_file, 'r') as zip_ref:
+                        zip_ref.extractall(self.config['input_dir'])
+                    os.remove(input_file)
+                except Exception as e:
+                    logging.error(f"Error extracting zip file {input_filename}: {str(e)}")
+                    raise
+
+        # Then process any JSON files (including those that were in zips)
+        for input_filename in os.listdir(self.config['input_dir']):
+            logging.info(f"Processing json file: {input_filename}")
             input_file = os.path.join(self.config['input_dir'], input_filename)
             if os.path.splitext(input_file)[1].lower() == '.json':
                 with open(input_file, 'r') as f:
