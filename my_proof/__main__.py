@@ -24,7 +24,6 @@ def load_config() -> Dict[str, Any]:
         'filebase_access_key_id': os.environ.get('FILEBASE_ACCESS_KEY_ID', None),
         'filebase_secret_access_key': os.environ.get('FILEBASE_SECRET_ACCESS_KEY', None),
     }
-    logging.info(f"Using config: {json.dumps(config, indent=2)}")
     return config
 
 

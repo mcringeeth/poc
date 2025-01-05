@@ -20,12 +20,14 @@ class Proof:
         """Generate proofs for all input files."""
         logging.info("Starting proof generation")
 
-
         for input_filename in os.listdir(self.config['input_dir']):
             input_file = os.path.join(self.config['input_dir'], input_filename)
             if os.path.splitext(input_file)[1].lower() == '.json':
                 with open(input_file, 'r') as f:
                     input_data = json.load(f)
+
+        if input_data is None:
+            raise ValueError("No files found in input directory")
 
         self.proof_response.uniqueness = self.calc_uniqueness(input_data)
         self.proof_response.ownership = self.calc_ownership(input_data)
