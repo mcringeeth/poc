@@ -12,3 +12,4 @@ enclave-key.pem
 .DS_Store
 
 .env.example
+public_key.pem

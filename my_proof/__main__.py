@@ -48,31 +48,19 @@ def run() -> None:
 def extract_input() -> None:
     """
     If the input directory contains any zip files, extract them and remove the original zip files
-    """
-    logging.info(f"Scanning {INPUT_DIR} for zip files...")
-    zip_files_found = False
-    
+    """    
     for input_filename in os.listdir(INPUT_DIR):
         input_file = os.path.join(INPUT_DIR, input_filename)
 
         if zipfile.is_zipfile(input_file):
-            zip_files_found = True
-            logging.info(f"Found zip file: {input_filename}")
             try:
                 with zipfile.ZipFile(input_file, 'r') as zip_ref:
-                    file_list = zip_ref.namelist()
-                    logging.info(f"Zip contains: {', '.join(file_list)}")
-                    logging.info(f"Extracting contents of {input_filename}...")
                     zip_ref.extractall(INPUT_DIR)
                 os.remove(input_file)
-                logging.info(f"Successfully extracted and removed: {input_filename}")
             except Exception as e:
                 logging.error(f"Error processing zip file {input_filename}: {str(e)}")
                 raise
     
-    if not zip_files_found:
-        logging.info("No zip files found in input directory")
-
 
 if __name__ == "__main__":
     try:

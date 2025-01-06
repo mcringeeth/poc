@@ -30,7 +30,7 @@ class FilebaseService:
             return data.get('hash_list', [])
         except Exception as e:
             logging.error(f"Error fetching list of hashes: {str(e)}")
-            return []
+            raise e
 
     def update_hash_list(self, existing_hashes, new_hash):
         try:
@@ -47,4 +47,4 @@ class FilebaseService:
             return True
         except Exception as e:
             logging.error(f"Error updating hashes: {str(e)}")
-            
+            raise e

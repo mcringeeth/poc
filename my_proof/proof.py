@@ -7,7 +7,6 @@ import hmac
 from urllib.parse import parse_qsl
 from datetime import datetime
 from my_proof.filebase_service import FilebaseService
-import zipfile
 
 from my_proof.models.proof_response import ProofResponse
 
@@ -24,7 +23,6 @@ class Proof:
 
         # Process all files as potential JSON files
         for input_filename in os.listdir(self.config['input_dir']):
-            logging.info(f"Processing file: {input_filename}")
             input_file = os.path.join(self.config['input_dir'], input_filename)
             try:
                 with open(input_file, 'r') as f:
@@ -114,18 +112,27 @@ class Proof:
             except Exception:
                 stats["invalid_dates"] += 1
 
+        
+
         # Calculate quality scores (0-1 for each component)
-        scores = {
-            # Content quality: ratio of non-empty messages
-            "content": 1 - (stats["empty_messages"] / stats["total_messages"]),
-            
-            # Time quality: penalize gaps and invalid dates
-            "time": 1 - min(1, (stats["large_gaps"] * 0.1 + 
-                            stats["invalid_dates"] / stats["total_messages"])),
-            
-            # Interaction quality: ratio of replies
-            "interaction": min(1, stats["replies"] / (stats["total_messages"] * 0.3))
-        }
+        if stats["total_messages"] == 0:
+            scores = {
+                "content": 0,
+                "time": 0,
+                "interaction": 0
+            }
+        else:
+            scores = {
+                # Content quality: ratio of non-empty messages
+                "content": 1 - (stats["empty_messages"] / stats["total_messages"]),
+                
+                # Time quality: penalize gaps and invalid dates
+                "time": 1 - min(1, (stats["large_gaps"] * 0.1 + 
+                                stats["invalid_dates"] / stats["total_messages"])),
+                
+                # Interaction quality: ratio of replies
+                "interaction": min(1, stats["replies"] / (stats["total_messages"] * 0.3))
+            }
     
         # Overall quality score (weighted average)
         weights = {"content": 0.8, "time": 0.1, "interaction": 0.1}
